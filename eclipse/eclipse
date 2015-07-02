@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# rory.hunter@blackpepper.co.uk Thu Jul  2 09:22:33 BST 2015 
+#
+# This wrapper throws away the container when it shuts down. To access
+# files on your actual filesystem, mount a volume when you run the script
+# e.g. 
+#
+# eclipse -v $HOME/projects:/home/dev/projects
+#
+# Note that application-specific files are mounted in the diretory below.
+# You can more or remove it to reset the application.
+
+SETTINGS_DIR="$HOME/eclipse"
+
+if [ ! -d "$SETTINGS_DIR" ]; then
+	mkdir "$SETTINGS_DIR"
+fi
+
+docker run \
+	--rm -it \
+	--user="$UID" \
+	-v /tmp/.X11-unix:/tmp/.X11-unix \
+	-v "$SETTINGS_DIR":/home/dev/ \
+	--net host \
+	-e DISPLAY="$DISPLAY" \
+	--name eclipse \
+	"$@" \
+	blackpepper/eclipse
