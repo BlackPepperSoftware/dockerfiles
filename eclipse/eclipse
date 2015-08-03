@@ -11,19 +11,33 @@
 # Note that application-specific files are mounted in the diretory below.
 # You can more or remove it to reset the application.
 
+CONTAINER_NAME=eclipse
 SETTINGS_DIR="$HOME/eclipse"
 
-if [ ! -d "$SETTINGS_DIR" ]; then
-	mkdir "$SETTINGS_DIR"
+docker ps | awk 'NR > 1 {print $NF}' | grep -q $CONTAINER_NAME
+
+if [ $? -eq 0 ]; then
+	echo "$CONTAINER_NAME is already running." >&2
+	exit 1
 fi
 
-docker run \
-	--rm -it \
-	--user="$UID" \
-	-v /tmp/.X11-unix:/tmp/.X11-unix \
-	-v "$SETTINGS_DIR":/home/dev/ \
-	--net host \
-	-e DISPLAY="$DISPLAY" \
-	--name eclipse \
-	"$@" \
-	blackpepper/eclipse
+# Check for an existing container
+docker ps -a | awk 'NR > 1 {print $NF}' | grep -q $CONTAINER_NAME
+
+if [ $? -eq 0 ]; then
+	docker start $CONTAINER_NAME
+else
+	if [ ! -d "$SETTINGS_DIR" ]; then
+		mkdir "$SETTINGS_DIR"
+	fi
+
+	docker run \
+		-d \
+		--user="$UID" \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v "$SETTINGS_DIR":/home/dev/ \
+		--net host \
+		-e DISPLAY="$DISPLAY" \
+		--name $CONTAINER_NAME \
+		"$@" \
+		blackpepper/eclipse
