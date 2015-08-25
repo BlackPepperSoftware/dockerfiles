@@ -10,4 +10,7 @@ containers.
 * eclipse - [Eclipse](https://www.eclipse.org/) Mars, JEE Edition
 * maven - [Maven](https://hub.docker.com/_/maven/) container with a "maven"
   user, UID 1000. Helps with avoiding build artifacts owned by root.
+* sshtun - Provides an [ambassador
+  container](https://docs.docker.com/articles/ambassador_pattern_linking/)
+  for linking containers to an SSH tunnel endpoint.
 
