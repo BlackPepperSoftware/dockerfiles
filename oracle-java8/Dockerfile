@@ -1,35 +1,21 @@
-#
-# Oracle Java 8 Dockerfile
-# 
-# Originaly from:
-#
-# https://github.com/dockerfile/java/tree/master/oracle-java8
-#
-# Then modified to make it functional, since Docker had to stop providing
-# official Oracle JDK builds.
+# Oracle Java 8 with Unlimited Strength Crypto
 
-# Pull base image.
-FROM ubuntu:14.04
+FROM debian:jessie
 
 MAINTAINER Rory Hunter <rory.hunter@blackpepper.co.uk> (@RoryAHunter)
 
-# Install Java.
-RUN \
-  apt-get -y install software-properties-common && \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get -y update && \
-  apt-get -y upgrade && \
-  apt-get install -y oracle-java8-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
-
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -q && \
+	apt-get install -qy --no-install-recommends unzip && \
+	mkdir -p /usr/lib/jvm /data
 
 # Define working directory.
 WORKDIR /data
 
-# Define commonly used JAVA_HOME variable
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+COPY jdk-8u51-linux-x64.tar.gz jce_policy-8.zip update-alternatives.sh /tmp/
 
-# Define default command.
-CMD ["bash"]
+ENV JAVA_HOME /usr/lib/jvm/jdk1.8.0_51
+
+RUN tar xzf /tmp/jdk-8u51-linux-x64.tar.gz -C /usr/lib/jvm && \
+	unzip -o -j -d $JAVA_HOME/jre/lib/security/ /tmp/jce_policy-8.zip && \
+	/tmp/update-alternatives.sh && \
+	rm /tmp/update-alternatives.sh /tmp/*.gz /tmp/*.zip

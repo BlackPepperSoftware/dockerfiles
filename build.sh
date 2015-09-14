@@ -8,7 +8,14 @@ build_container() {
 	local VERSION="$3"
 
 	echo "Building $NAME..."
-	docker build -t $NAME $DIR
+	if [ -x "$DIR/build.sh" ]; then
+		cd "$DIR"
+		# Expected to create $NAME:latest
+		./build.sh $NAME
+	else
+		docker build -t $NAME $DIR
+	fi
+
 	docker tag $NAME:latest registry.blackpepper.co.uk/$NAME:latest
 
 	if [ -n "$VERSION" ]; then
