@@ -11,11 +11,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -q && \
 # Define working directory.
 WORKDIR /data
 
-COPY jdk-8u51-linux-x64.tar.gz jce_policy-8.zip update-alternatives.sh /tmp/
+COPY jdk-8u66-linux-x64.tar.gz jce_policy-8.zip update-alternatives.sh /tmp/
 
-ENV JAVA_HOME /usr/lib/jvm/jdk1.8.0_51
+ENV JAVA_HOME /usr/lib/jvm/jdk1.8.0_66
 
-RUN tar xzf /tmp/jdk-8u51-linux-x64.tar.gz -C /usr/lib/jvm && \
+RUN tar xzf /tmp/jdk-8u66-linux-x64.tar.gz -C /usr/lib/jvm && \
 	unzip -o -j -d $JAVA_HOME/jre/lib/security/ /tmp/jce_policy-8.zip && \
 	/tmp/update-alternatives.sh && \
 	rm /tmp/update-alternatives.sh /tmp/*.gz /tmp/*.zip

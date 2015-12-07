@@ -9,7 +9,7 @@ fi
 
 wget -nc \
 	--header "Cookie: oraclelicense=accept-securebackup-cookie" \
-	http://download.oracle.com/otn-pub/java/jdk/8u51-b16/jdk-8u51-linux-x64.tar.gz \
+	http://download.oracle.com/otn-pub/java/jdk/8u66-b17/jdk-8u66-linux-x64.tar.gz \
 	http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip
 
-docker build -t "$1" .
+docker build --pull -t "$1" .
